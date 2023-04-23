@@ -1,4 +1,3 @@
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const sendgridMail = require('@sendgrid/mail');
@@ -13,34 +12,31 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-
-
 app.post('/sendotp', (req, res) => {
-    const { email } = req.body;
-    const otp = Math.floor(Math.random() * 9000) + 1000;
+  const { email } = req.body;
+  const otp = Math.floor(Math.random() * 9000) + 1000;
     
-    console.log(apiKey);
-    sendgridMail.setApiKey(apiKey);
+  sendgridMail.setApiKey(apiKey);
   
-    const msg = {
-      to: 'ibraheemsheikh2@gmail.com',
-      from: 'tonywilson.1357@gmail.com',
-      subject: 'OTP Verification Code',
-      text: `Your OTP verification code is: ${otp}`,
-    };
+  const msg = {
+    to: email,
+    from: 'tonywilson.1357@gmail.com',
+    subject: 'OTP Verification Code',
+    text: `Your OTP verification code is: ${otp}.`,
+  };
   
-    sendgridMail
-      .send(msg)
-      .then(() => {
-        console.log('OTP sent to ${email} successfully! ');
-        res.send({ success: true, message: 'OTP sent successfully!'});
-      })
-      .catch((error) => {
-        console.error(error);
-        res.status(500).send({ success: false, message: 'Failed to send OTP' });
-      });
-  });
+  sendgridMail
+    .send(msg)
+    .then(() => {
+      console.log(`OTP sent to ${email} successfully!`);
+      res.send({ success: true, message: 'OTP sent successfully!'});
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send({ success: false, message: 'Failed to send OTP' });
+    });
+});
   
-  app.listen(3000, () => {
-    console.log('Server started on port 3000');
-  });
+app.listen(3000, () => {
+  console.log('Server started on port 3000');
+});
