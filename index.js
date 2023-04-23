@@ -1,21 +1,30 @@
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const sendgridMail = require('@sendgrid/mail');
-const uuid = require('uuid');
+const { v4: uuid } = require('uuid'); 
+require('dotenv').config();
+
+console.log(process.env.SENDGRID_API_KEY);
+
+const apiKey = process.env.SENDGRID_API_KEY;
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+
+
 app.post('/sendotp', (req, res) => {
     const { email } = req.body;
-    const otp = uuid.v4().substr(0, 4); // Generate a 4-digit OTP using UUID
-  
-    sendgridMail.setApiKey('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');
+    const otp = Math.floor(Math.random() * 9000) + 1000;
+    
+    console.log(apiKey);
+    sendgridMail.setApiKey(apiKey);
   
     const msg = {
       to: 'ibraheemsheikh2@gmail.com',
-      from: 'ibraheemsheikh2023@gmail.com',
+      from: 'tonywilson.1357@gmail.com',
       subject: 'OTP Verification Code',
       text: `Your OTP verification code is: ${otp}`,
     };
@@ -23,6 +32,7 @@ app.post('/sendotp', (req, res) => {
     sendgridMail
       .send(msg)
       .then(() => {
+        console.log('OTP sent to ${email} successfully! ');
         res.send({ success: true, message: 'OTP sent successfully!'});
       })
       .catch((error) => {
