@@ -29,7 +29,7 @@ app.post('/sendotp', (req, res) => {
     .send(msg)
     .then(() => {
       console.log(`OTP sent to ${email} successfully!`);
-      res.send({ success: true, message: 'OTP sent successfully!'});
+      res.send({ success: true, message: 'OTP sent successfully!', otp : otp});
     })
     .catch((error) => {
       console.error(error);
